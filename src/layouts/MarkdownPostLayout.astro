@@ -11,7 +11,7 @@ const { frontmatter } = Astro.props;
     <link
         rel="stylesheet"
         type="text/css"
-        href="https://app.klipse.tech/css/codemirror.css"
+        href="https://storage.googleapis.com/app.klipse.tech/css/codemirror.css"
     />
 
     <script is:inline>
@@ -19,6 +19,8 @@ const { frontmatter } = Astro.props;
             selector: ".language-klipse", // css selector for the html elements you want to klipsify
         };
     </script>
-    <script is:inline src="https://app.klipse.tech/plugin/js/klipse_plugin.js"
+    <script
+        is:inline
+        src="https://storage.googleapis.com/app.klipse.tech/plugin/js/klipse_plugin.js"
     ></script>
 </BaseLayout>
