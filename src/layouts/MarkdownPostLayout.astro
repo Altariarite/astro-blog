@@ -1,0 +1,24 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout pageTitle={frontmatter.title}>
+    <p>Published on: {frontmatter.pubDate.toString().slice(0, 10)}</p>
+    <p>Written by {frontmatter.author}</p>
+
+    <slot />
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="http://app.klipse.tech/css/codemirror.css"
+    />
+
+    <script is:inline>
+        window.klipse_settings = {
+            selector: ".language-klipse", // css selector for the html elements you want to klipsify
+        };
+    </script>
+    <script is:inline src="http://app.klipse.tech/plugin/js/klipse_plugin.js"
+    ></script>
+</BaseLayout>

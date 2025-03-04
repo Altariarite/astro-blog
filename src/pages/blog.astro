@@ -1,34 +1,22 @@
 ---
-
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/global.css";
 ---
 
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
-        <title>Astro</title>
-    </head>
-    <body>
-        <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/blog/">Blog</a>
-        <h1>The Blog page</h1>
-        <p>Posting about my journey learning Astro...</p>
-        <ul>
-            <li><a href="/posts/post-1/">Post 1</a></li>
-            <li><a href="/posts/post-2/">Post 2</a></li>
-            <li><a href="/posts/post-3/">Post 3</a></li>
-        </ul>
-        <p>Posting about my journey learning Clojurescript and Web...</p>
-        <ul>
-            <li>
-                <a href="/posts/clojurescript-macros/"
-                    >Working through the book ANSI Common Lisp in Clojurescript
-                    - Macros</a
-                >
-            </li>
-        </ul>
-    </body>
-</html>
+<BaseLayout>
+    <h1>The Blog page</h1>
+    <p>My journey learning Astro...</p>
+    <ul>
+        <li><a href="/posts/post-1/">Post 1</a></li>
+        <li><a href="/posts/post-2/">Post 2</a></li>
+        <li><a href="/posts/post-3/">Post 3</a></li>
+    </ul>
+    <p>My journey learning Clojurescript and the web...</p>
+    <ul>
+        <li>
+            <a href="/posts/clojurescript-macros/">Macros in Clojure </a>
+        </li>
+    </ul>
+</BaseLayout>
