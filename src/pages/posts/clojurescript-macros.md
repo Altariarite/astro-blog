@@ -20,14 +20,12 @@ Some quirks of the online repl means we need to switch to a special namespace
 ```
 ## Intro to Macros
 
-A `defmacro` looks a lot like a `defun`, but instead of defining the value a call should produce, it defines how a call should be translated.
-
+A `defmacro` looks a lot like a `defun`, but instead of defining the value a call should produce, it defines how a call should be translated.[^1]
+[^1]: Macros have deep relations with functions: they are functions that run at compile time. At compile time Lisp codes are just Lisp lists that can be manipulated by Lisp itself.
 ```klipse
 (defmacro nil! [x]
   (list 'reset! x nil))
-```
 
-```klipse
 (def i (atom 1))
 @i
 ```
@@ -42,10 +40,8 @@ To test a macro we look at it's expansion
 (macroexpand-1 '(my.m/nil! x))
 ```
 
-TODO: adapt the function part
-
 ## Backtick `
-[^1]: Common Lisp uses backquote instead of backtick. Clojure uses a different set of symbols. Similarly `~` is `,` and `~@` is `,@` in Common Lisp.
+
 
 The backtick read-macro makes it possible to build lists from templates. Used by itself, it looks like a normal quote, but resolves to namespace-qualified symbols.
 ```klipse
@@ -54,7 +50,8 @@ The backtick read-macro makes it possible to build lists from templates. Used by
 ```klipse
 `(a b c)
 ```
-The advantage of backtick is that, within a backtick expression, you can use `~` (tilda, or unquote) and `~@` (tilda-at, or "unquote splicing") to turn evaluation back on[^1].
+The advantage of backtick is that, within a backtick expression, you can use `~` (tilda, or unquote) and `~@` (tilda-at, or "unquote splicing") to turn evaluation back on[^2].
+[^2]: Common Lisp uses backquote instead of backtick. Clojure uses a different set of symbols. Similarly `~` is `,` and `~@` is `,@` in Common Lisp.
 ```klipse
 (def a 1)
 (def b 2)
@@ -68,14 +65,11 @@ Example using `~@`
 `(lst is ~@lst)
 ```
 
-By using backquote instead of a call to `list`, we can write macro definitions that look like the expansions they will produce. 
+By using backquote instead of a call to `list`, we can write macro definitions that look like the expansions they will produce. We can define `nil2!` that's equivalent to `nil!`
 ```klipse
 (defmacro nil2! [x]
   `(reset! ~x nil))
-```
 
-`nil2!` is equivalent to `nil!`
-```klipse
 (macroexpand-1 '(my.m/nil2! x))
 ```
 
@@ -151,6 +145,7 @@ Yes, I remember now. Backtick resolves symbols to namespace-qualified ones.
 ```
 For the same reason, the `i` in the loop resolves to `my.m/i`, and as you can probably tell from the error message, you cannot have namespace-qualified symbols as a local name.
 
+## Gensym
 To write the macro correctly, we need another tool - symbol generation. 
 
 We can generate unique symbol names by appending `#` to the symbol.
@@ -159,15 +154,14 @@ We can generate unique symbol names by appending `#` to the symbol.
 `(a#)
 ```
 
+Now the symbol can be properly named and local, and there's very little chance that it will overlap with the same symbol name outside the macro.
 ```klipse
 (defmacro ntimes [n & body]
   `(loop [i# 0]
      (when (< i# ~n)
        ~@body
        (recur (inc i#)))))
-```
-Now the symbol is properly named and local, and there's very little chance that it will overlap with the same symbol name outside the macro.
-```klipse
+
 (macroexpand-1 '(my.m/ntimes 10 (print ".")))
 ```
 Let's test our macro:
