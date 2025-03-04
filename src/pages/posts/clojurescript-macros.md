@@ -122,12 +122,34 @@ Let's first look at an incorrect version of `ntimes`:
 (my.m/ntimes 10 (print "."))
 ```
 
-Oops, that didn't work. What's wrong? [Turns out](https://clojure-doc.org/articles/language/macros/) writing macro is dangerous, because the `i` in macro might shadow some other `i` outside the scope of the macro. If this is confusing, don't worry as Clojure is being very nice and already thought about this, and that's why `` ` ``(backtick) resolves to namespace-qualified symbols.
+Oops, that didn't work. What's wrong? [Turns out](https://clojure-doc.org/articles/language/macros/) writing macro is dangerous, because the `i` in macro might shadow some other `i` outside the scope of the macro. 
+
+```klipse
+@i ;; we defined i before and set it to nil
+```
+
+Let's see what a dangerous macro can do:
+
+```klipse
+(defmacro danger! []
+`(reset! i 1))
+(my.m/danger!)
+@i
+```
+
+Whoa! We accidently modified i, with out even passing it as an argument! And I thought Clojure is supposed to be clean...
+
+Let's see what happened under the hood:
+
+```klipse
+(macroexpand-1 '(my.m/danger!))
+```
+Yes, I remember now. Backtick resolves symbols to namespace-qualified ones.
 
 ```klipse
 (macroexpand-1 '(my.m/ntimes 10 (print ".")))
 ```
-In this case, the `i` in the loop resolves to `my.m/i`, and as you can probably tell from the error message, you cannot have namespace-qualified symbols as a local name.
+For the same reason, the `i` in the loop resolves to `my.m/i`, and as you can probably tell from the error message, you cannot have namespace-qualified symbols as a local name.
 
 To write the macro correctly, we need another tool - symbol generation. 
 
